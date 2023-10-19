@@ -161,13 +161,13 @@ def SGD_RMS_prop(grad_method, X, y, beta0, lr,  n_epochs, batch_size,test_loss_f
     for key in keys:
         v[key] = jnp.zeros_like(beta0[key])
     Giter = {}
-
+    
     # Perform training
     for i in range(n_epochs):
 
         # Reset giter
         for key in keys:
-            Giter[key] = 0
+            Giter[key] = 0.0
 
         # Iterate over the batches
         for j in range(m):
@@ -189,6 +189,7 @@ def SGD_RMS_prop(grad_method, X, y, beta0, lr,  n_epochs, batch_size,test_loss_f
                 update = grad*eta/(delta+jnp.sqrt(Giter[key]))
                 # Perform step
                 v[key] = gamma * v[key] + update
+
 
                 new_beta[key] = betas[-1][key] - v[key]
             
