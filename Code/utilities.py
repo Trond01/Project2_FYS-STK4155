@@ -1,7 +1,7 @@
 import jax.numpy as jnp
 from jax import grad, nn
 import numpy as np
-
+from matplotlib import pyplot as plt
 
 def feature_matrix(x, num_features):
     """
@@ -81,3 +81,26 @@ def OLS_grad(beta, X, y, model):
 
 def MSE_grad(model):
     return (lambda beta, X, y : OLS_grad(beta, X, y, model))
+
+
+def plot_test_results(test_loss_list, train_loss_list, m):
+    # Create a figure with two subplots
+    fig, axs = plt.subplots(1, 2, figsize=(9, 3))  # 1 row, 2 columns
+
+    # Subplot 1
+    axs[0].plot(test_loss_list, label="test")
+    axs[0].plot(train_loss_list, label="train")
+    axs[0].set_xlabel("Training step")
+    axs[0].set_ylabel("MSE")
+    axs[0].set_title("Over all sub-epochs")
+    axs[0].legend()
+
+    # Subplot 2
+    axs[1].plot(test_loss_list[::m], label="test")
+    axs[1].plot(train_loss_list[::m], label="train")
+    axs[1].set_xlabel("Training step")
+    axs[1].set_title("End of epoch error")
+    axs[1].legend()
+
+    plt.tight_layout()
+    plt.show()
