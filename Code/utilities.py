@@ -26,6 +26,27 @@ def random_partition(X, y, batch_size):
     return batches
 
 
+def train_test_split(X, Y, percentage, test_index=None):
+    """
+    X: Feature matrix
+    Y: Label vector(size=(n, 1))
+    Percentage: How much of the dataset should be used as a test set.
+    """
+
+    n = X.shape[0]
+    if test_index is None:
+        test_index = np.random.choice(n, round(n * percentage), replace=False)
+    test_X = X[test_index]
+    test_Y = Y[test_index]
+
+    train_X = np.delete(X, test_index, axis=0)
+    train_Y = np.delete(Y, test_index, axis=0)
+
+    return train_X, train_Y, test_X, test_Y, test_index
+
+
+
+
 def jax_loss_grad(loss_func):
     return grad(loss_func)
 
