@@ -307,9 +307,8 @@ batch_size=10, test_loss_func=None, lr=0.01, gamma=0.0):
     # Initialise result storage
     result = {}
     if test_loss_func is not None:
-        result["train_loss_list"]  = [test_loss_func(beta0, X_test, y_test)]
+        result["train_loss_list"]  = [test_loss_func(beta0, X_train, y_train)]
         result["test_loss_list"]  = [test_loss_func(beta0, X_test, y_test)]
-    betas = [beta0]
     
     # Initialise step
     v = {}
