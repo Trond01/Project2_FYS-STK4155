@@ -1,2 +1,4 @@
-from descent_methods import *
 
+
+
+def 
