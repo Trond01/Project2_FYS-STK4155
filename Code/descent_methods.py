@@ -367,8 +367,8 @@ def init_adam(lr, weights, beta1, beta2, delta):
 
     # Reset accumulation variables
     for key in weights.keys():
-        tools["s"][key] = jnp.zeros_like(weights[key])
-        tools["r"][key] = jnp.zeros_like(weights[key])
+        tools["s"][key] = 0
+        tools["r"][key] = 0
 
     return (lambda epoch, gamma, v: tools | {"epoch" : epoch, "gamma":gamma, "v":v})
 
@@ -389,7 +389,7 @@ def step_adam(beta_prev, adam_variables, gradients):
 
         # Perform step
         adam_variables["v"][key] = adam_variables["gamma"] * adam_variables["v"][key] + update
-        new_beta[key] = beta_prev[key] + adam_variables["v"][key]
+        new_beta[key] = beta_prev[key] - adam_variables["v"][key]
 
     return new_beta, adam_variables
 
