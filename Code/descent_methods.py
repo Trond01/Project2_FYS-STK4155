@@ -100,7 +100,6 @@ def step_SGD(beta_prev, variables, gradients):
         update = variables["lr"] * gradients[key]
 
         # Perform step, if gamma != 0 it is done with momentum...
-        print(variables["gamma"], "\n\n", variables["v"][key], "\n\n", update)
         variables["v"][key] = variables["gamma"] * variables["v"][key] + update
         new_beta[key] = beta_prev[key] - variables["v"][key]
 
