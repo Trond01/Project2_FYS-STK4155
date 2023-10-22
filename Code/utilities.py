@@ -45,15 +45,13 @@ def train_test_split(X, Y, percentage, test_index=None):
     return train_X, train_Y, test_X, test_Y, test_index
 
 
-
-
 def jax_loss_grad(loss_func):
     return grad(loss_func)
 
 
-
 def Ridge_loss_method(lam, model):
     return (lambda beta, X, y : Ridge_Loss(beta, X, y, model, lam))
+
 
 def Ridge_Loss(beta, X, y, model, lam=0.01):
     return MSELoss(model(beta, X), y) + jnp.sum(jnp.power(beta, 2))*(lam/(2*jnp.size(y)))
@@ -78,6 +76,10 @@ def MSELoss(y, y_pred):
 def OLS_grad(beta, X, y, model):
     n = y.shape[0]
     return 2*(np.dot(X.T, ( model(beta, X) - y))) / n
+
+# def RIDGE_grad(beta, X, y, model):
+#     n = y.shape[0]
+#     return 2*(np.dot(X.T, ( model(beta, X) - y))) / n
 
 def MSE_grad(model):
     return (lambda beta, X, y : OLS_grad(beta, X, y, model))
