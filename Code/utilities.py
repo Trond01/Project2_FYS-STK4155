@@ -3,6 +3,7 @@ from jax import grad, nn
 import numpy as np
 from matplotlib import pyplot as plt
 
+
 def feature_matrix(x, num_features):
     """
     x: array with x values
@@ -20,7 +21,7 @@ def random_partition(X, y, batch_size):
     n = y.shape[0]
     m = int(n / batch_size)
     for i in range(m):
-        index = list(range(i*batch_size, (i+1)*batch_size))
+        index = list(range(i * batch_size, (i + 1) * batch_size))
         batches.append((X[index, :], y[index]))
 
     return batches
@@ -50,15 +51,17 @@ def jax_loss_grad(loss_func):
 
 
 def Ridge_loss_method(lam, model):
-    return (lambda beta, X, y : Ridge_Loss(beta, X, y, model, lam))
+    return lambda beta, X, y: Ridge_Loss(beta, X, y, model, lam)
 
 
 def Ridge_Loss(beta, X, y, model, lam=0.01):
-    return MSELoss(model(beta, X), y) + jnp.sum(jnp.power(beta, 2))*(lam/(2*jnp.size(y)))
+    return MSELoss(model(beta, X), y) + jnp.sum(jnp.power(beta, 2)) * (
+        lam / (2 * jnp.size(y))
+    )
 
 
 def MSELoss_method(model):
-    return (lambda beta, X, y : MSELoss(model(beta, X), y))
+    return lambda beta, X, y: MSELoss(model(beta, X), y)
 
 
 def MSELoss(y, y_pred):
@@ -73,16 +76,19 @@ def MSELoss(y, y_pred):
     """
     return jnp.sum(jnp.power(y - y_pred, 2)) / y.shape[0]
 
+
 def OLS_grad(beta, X, y, model):
     n = y.shape[0]
-    return 2*(np.dot(X.T, ( model(beta, X) - y))) / n
+    return 2 * (np.dot(X.T, (model(beta, X) - y))) / n
+
 
 # def RIDGE_grad(beta, X, y, model):
 #     n = y.shape[0]
-#     return 2*(np.dot(X.T, ( model(beta, X) - y))) / n
+#     return 2*(np.dot(X.T, ( model(beta, X) - y))) / n TODO
+
 
 def MSE_grad(model):
-    return (lambda beta, X, y : OLS_grad(beta, X, y, model))
+    return lambda beta, X, y: OLS_grad(beta, X, y, model)
 
 
 def plot_test_results(test_loss_list, train_loss_list, m):
