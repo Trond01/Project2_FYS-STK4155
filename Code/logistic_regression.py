@@ -1,26 +1,46 @@
-from utilities import jax_loss_grad
+from Code.utilities import jax_loss_grad
 import jax.numpy as jnp
 import pandas as pd
+
 
 def log_loss(y_pred, y_i):
     y_pred = jnp.reshape(y_pred, (-1, 1))
     y_i = jnp.reshape(y_i, (-1, 1))
-    return jnp.sum(-y_i*jnp.log(y_pred) - (1 - y_i)*jnp.log(1 - y_pred))/y_i.shape[0]
+    return (
+        jnp.sum(-y_i * jnp.log(y_pred) - (1 - y_i) * jnp.log(1 - y_pred)) / y_i.shape[0]
+    )
 
 
 def logistic_loss_func(model):
-    return (lambda beta, X, y: log_loss(model(beta, X), y))
+    return lambda beta, X, y: log_loss(model(beta, X), y)
 
 
 def logistic_grad(model):
     return jax_loss_grad(logistic_loss_func(model))
 
 
-def import_breast_cancer():
-    header = ["id", "thickness", "uni_cell_s", "uni_cell_sh", "marg_adh", "single_epithel", "bare_nuc", "bland_chromatin", "normal_nuc", "mitoses", "target"]
-    data = pd.read_csv("breast-cancer-wisconsin.data", names=header)
+def import_breast_cancer(filename="../Code/Data/breast-cancer-wisconsin.data"):
+    """
+    default filename assumes file is run from one folder deep from one folder outside Code ...
+    """
+
+
+    header = [
+        "id",
+        "thickness",
+        "uni_cell_s",
+        "uni_cell_sh",
+        "marg_adh",
+        "single_epithel",
+        "bare_nuc",
+        "bland_chromatin",
+        "normal_nuc",
+        "mitoses",
+        "target",
+    ]
+    data = pd.read_csv(filename, names=header)
     for col in data.columns:
-        data[col] = pd.to_numeric(data[col], errors='coerce')
+        data[col] = pd.to_numeric(data[col], errors="coerce")
     data = data.dropna()
     data["target"] = data["target"] == 4
     y = jnp.array(data["target"], dtype=int)
@@ -35,8 +55,8 @@ def accuracy(y_pred, y_i):
 
 
 def accuracy_func(model):
-    return (lambda beta, X, y: accuracy(model(beta, X), y))
+    return lambda beta, X, y: accuracy(model(beta, X), y)
 
 
 def loss_func_creator(model, loss_compute):
-    return (lambda beta, X, y: loss_compute(model(beta, X), y))
+    return lambda beta, X, y: loss_compute(model(beta, X), y)
