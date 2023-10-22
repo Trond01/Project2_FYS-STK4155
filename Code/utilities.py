@@ -84,7 +84,7 @@ def OLS_grad(beta, X, y, model):
 
 # def RIDGE_grad(beta, X, y, model):
 #     n = y.shape[0]
-#     return 2*(np.dot(X.T, ( model(beta, X) - y))) / n
+#     return 2*(np.dot(X.T, ( model(beta, X) - y))) / n TODO
 
 
 def MSE_grad(model):
