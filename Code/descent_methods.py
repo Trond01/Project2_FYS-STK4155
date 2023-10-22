@@ -1,8 +1,7 @@
-from Code.utilities import random_partition, feature_matrix
+from Code.utilities import random_partition
 
 import jax.numpy as jnp
 import numpy as np
-from jax import device_put, jit
 
 ########################################################################################################################################
 ########################################################################################################################################
@@ -182,7 +181,7 @@ def init_adagrad(lr, weights, delta):
 
     # Reset accumulation variables
     for key in weights.keys():
-        tools["r"][key] = jnp.zeros_like(weights[key])
+        tools["r"][key] = 0  # jnp.zeros_like(weights[key]), blir samme svar
 
     return lambda epoch, gamma, v: tools | {"epoch": epoch, "gamma": gamma, "v": v}
 
