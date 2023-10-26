@@ -50,16 +50,6 @@ def jax_loss_grad(loss_func):
     return grad(loss_func)
 
 
-def Ridge_loss_method(lam, model):
-    return lambda beta, X, y: Ridge_Loss(beta, X, y, model, lam)
-
-
-def Ridge_Loss(beta, X, y, model, lam=0.01):
-    return MSELoss(model(beta, X), y) + jnp.sum(jnp.power(beta, 2)) * (
-        lam / (2 * jnp.size(y))
-    )
-
-
 def MSELoss_method(model):
     return lambda beta, X, y: MSELoss(model(beta, X), y)
 
@@ -82,13 +72,32 @@ def OLS_grad(beta, X, y, model):
     return 2 * (np.dot(X.T, (model(beta, X) - y))) / n
 
 
-# def RIDGE_grad(beta, X, y, model):
-#     n = y.shape[0]
-#     return 2*(np.dot(X.T, ( model(beta, X) - y))) / n TODO
-
-
 def MSE_grad(model):
     return lambda beta, X, y: OLS_grad(beta, X, y, model)
+
+
+##########################################################
+##################### RIDGE ##############################
+##########################################################
+
+
+# Hva brukes denne til?
+def Ridge_loss_method(lam, model):
+    return lambda beta, X, y: ridge_loss(beta, X, y, model, lam)
+
+
+# TODO Trenger vi model-argument kun for X @ beta?
+# TODO Hva konkluderte vi med for deling på 2n?
+def ridge_loss(beta, X, y, model, lam=0.01):
+    return MSELoss(model(beta, X), y) + jnp.sum(jnp.power(beta["b"], 2)) * (
+        lam / (2 * jnp.size(y))
+    )
+
+
+def ridge_grad(beta, X, y, model, lam):
+    mse_grad = OLS_grad(beta, X, y, model)
+    l2_grad = 2 * lam * beta["b"]
+    return mse_grad + l2_grad
 
 
 def plot_test_results(test_loss_list, train_loss_list, num_batches):
