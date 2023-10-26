@@ -91,7 +91,7 @@ def MSE_grad(model):
     return lambda beta, X, y: OLS_grad(beta, X, y, model)
 
 
-def plot_test_results(test_loss_list, train_loss_list, m):
+def plot_test_results(test_loss_list, train_loss_list, batch_size):
     # Create a figure with two subplots
     fig, axs = plt.subplots(1, 2, figsize=(9, 3))  # 1 row, 2 columns
 
@@ -104,8 +104,8 @@ def plot_test_results(test_loss_list, train_loss_list, m):
     axs[0].legend()
 
     # Subplot 2
-    axs[1].plot(test_loss_list[::m], label="test")
-    axs[1].plot(train_loss_list[::m], label="train")
+    axs[1].plot(test_loss_list[::batch_size], label="test")
+    axs[1].plot(train_loss_list[::batch_size], label="train")
     axs[1].set_xlabel("Training step")
     axs[1].set_title("End of epoch error")
     axs[1].legend()
