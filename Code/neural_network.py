@@ -24,7 +24,7 @@ def _beta_init(layer_list):
     return beta0
 
 
-def neural_network_model(beta, X, activation=sigmoid):
+def neural_network_model(beta, X, activation=sigmoid, output_activation = (lambda x: x)):
     """
     Function to evaluate the neural network prediction for feature matrix X
     """
@@ -35,9 +35,9 @@ def neural_network_model(beta, X, activation=sigmoid):
     for i in range(1, len(beta.keys()) // 2):  # for each layer
         out = activation(jnp.add(jnp.dot(out, beta[f"W{i}"]), beta[f"b{i}"]))
 
-    out_final = jnp.add(
+    out_final = output_activation(jnp.add(
         jnp.dot(out, beta[f"W{len(beta.keys())//2}"]), beta[f"b{len(beta.keys())//2}"]
-    )
+    ))
 
     return out_final
 
