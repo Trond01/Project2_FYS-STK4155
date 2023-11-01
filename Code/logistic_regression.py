@@ -7,7 +7,7 @@ def log_loss(y_pred, y_i):
     y_pred = jnp.reshape(y_pred, (-1, 1))
     y_i = jnp.reshape(y_i, (-1, 1))
     return (
-        jnp.sum(-y_i * jnp.log(y_pred) - (1 - y_i) * jnp.log(1 - y_pred)) / y_i.shape[0]
+        jnp.sum(-y_i * jnp.log(y_pred + 0.00001) - (1 - y_i) * jnp.log(1 - y_pred + 0.00001)) / y_i.shape[0]
     )
 
 
