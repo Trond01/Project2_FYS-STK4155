@@ -33,6 +33,8 @@ def neural_network_model(beta, X, activation=sigmoid):
 
     # For each remaining layer we propagate forward
     for i in range(1, len(beta.keys()) // 2):  # for each layer
+
+        # Dot with weights, add biases, apply activation function
         out = activation(jnp.add(jnp.dot(out, beta[f"W{i}"]), beta[f"b{i}"]))
 
     out_final = jnp.add(
@@ -53,10 +55,12 @@ def neural_network_train(
     batch_size=10,
     hidden_layer_list=[10],
     hidden_activation=sigmoid,
-    output_activation=None,  ### TODO??
+    output_activation=None,  ### TODO, actually implement this??
     descent_method=SGD_adam,
 ):
-    result = {}  # Dictionary for storing result
+    
+    # Dictionary for storing result
+    result = {}  
 
     # Find layer structure and initialise beta0
     layer_list = [X_train.shape[1]] + hidden_layer_list + [y_train.shape[1]]
