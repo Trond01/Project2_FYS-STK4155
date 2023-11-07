@@ -71,19 +71,13 @@ def OLS_grad(beta, X, y, model):
     n = y.shape[0]
     return 2 * (np.dot(X.T, (model(beta, X) - y))) / n
 
-
 def MSE_grad(model):
     return lambda beta, X, y: OLS_grad(beta, X, y, model)
-
 
 ##########################################################
 ##################### RIDGE ##############################
 ##########################################################
 
-
-# Hva brukes denne til?
-def Ridge_loss_method(lam, model):
-    return lambda beta, X, y: ridge_loss(beta, X, y, model, lam)
 
 
 # TODO Trenger vi model-argument kun for X @ beta?
@@ -93,11 +87,21 @@ def ridge_loss(beta, X, y, model, lam=0.01):
         lam / (2 * jnp.size(y))
     )
 
+# Hva brukes denne til?
+def Ridge_loss_method(lam, model):
+    return lambda beta, X, y: ridge_loss(beta, X, y, model, lam)
 
+
+# Analytic gradient of ridge
 def ridge_grad(beta, X, y, model, lam):
     mse_grad = OLS_grad(beta, X, y, model)
     l2_grad = 2 * lam * beta["b"]
     return mse_grad + l2_grad
+
+
+##########################################################
+##################### Some plotting ######################
+##########################################################
 
 
 def plot_test_results(test_loss_list, train_loss_list, num_batches):
