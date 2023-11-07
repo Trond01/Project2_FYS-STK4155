@@ -1,9 +1,10 @@
 import jax.numpy as jnp
-from jax import grad, nn
+from jax import grad
 import numpy as np
 from matplotlib import pyplot as plt
 
 
+# 1d
 def feature_matrix(x, num_features):
     """
     x: array with x values
@@ -46,12 +47,7 @@ def train_test_split(X, Y, percentage, test_index=None):
     return train_X, train_Y, test_X, test_Y, test_index
 
 
-def jax_loss_grad(loss_func):
-    return grad(loss_func)
-
-
-def MSELoss_method(model):
-    return lambda beta, X, y: MSELoss(model(beta, X), y)
+##################################################
 
 
 def MSELoss(y, y_pred):
@@ -67,37 +63,61 @@ def MSELoss(y, y_pred):
     return jnp.sum(jnp.power(y - y_pred, 2)) / y.shape[0]
 
 
-def OLS_grad(beta, X, y, model):
+# Defines loss function for JAX grad
+def MSELoss_method(model):
+    return lambda beta, X, y: MSELoss(model(beta, X), y)
+
+
+##########################################################
+##################### OLS and RIDGE
+##########################################################
+
+
+#### OLS Analytic
+def _OLS_grad(beta, X, y, model):
     n = y.shape[0]
     return 2 * (np.dot(X.T, (model(beta, X) - y))) / n
 
 
-def MSE_grad(model):
-    return lambda beta, X, y: OLS_grad(beta, X, y, model)
+def OLS_train_analgrad(model):
+    return lambda beta, X, y: {"b": _OLS_grad(beta, X, y, model)}
 
 
-##########################################################
-##################### RIDGE ##############################
-##########################################################
+#### OLS JAX
+def OLS_train_autograd(model):
+    return grad(MSELoss_method(model))
 
 
-# Hva brukes denne til?
-def Ridge_loss_method(lam, model):
-    return lambda beta, X, y: ridge_loss(beta, X, y, model, lam)
-
-
-# TODO Trenger vi model-argument kun for X @ beta?
-# TODO Hva konkluderte vi med for deling på 2n?
-def ridge_loss(beta, X, y, model, lam=0.01):
-    return MSELoss(model(beta, X), y) + jnp.sum(jnp.power(beta["b"], 2)) * (
-        lam / (2 * jnp.size(y))
-    )
-
-
-def ridge_grad(beta, X, y, model, lam):
-    mse_grad = OLS_grad(beta, X, y, model)
+#### Ridge analytic
+def _ridge_grad(beta, X, y, model, lam):
+    mse_grad = _OLS_grad(beta, X, y, model)
     l2_grad = 2 * lam * beta["b"]
     return mse_grad + l2_grad
+
+
+def ridge_train_analgrad(model, lam):
+    return lambda beta, X, y: {"b": _ridge_grad(beta, X, y, model, lam)}
+
+
+#### Ridge automatic
+def _ridge_term(beta):
+    s = 0.0
+    for key in beta.keys():
+        s += jnp.sum(jnp.power(beta[key], 2))
+    return s
+
+
+def ridge_loss_method(model, lam):
+    return lambda beta, X, y: MSELoss(model(beta, X), y) + _ridge_term(beta) * lam
+
+
+def ridge_train_autograd(model, lam):
+    return grad(ridge_loss_method(model, lam))
+
+
+##########################################################
+##################### Some plotting ######################
+##########################################################
 
 
 def plot_test_results(test_loss_list, train_loss_list, num_batches):
