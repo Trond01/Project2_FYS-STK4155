@@ -47,6 +47,7 @@ def _SGD_general(
 
     # Perform training
     for epoch in range(n_epochs):
+        print(f"Epoch: {epoch}")
         # Accumulation variables
         tools = init_func(epoch, gamma, v)
 

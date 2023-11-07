@@ -60,3 +60,16 @@ def accuracy_func(model):
 
 def loss_func_creator(model, loss_compute):
     return lambda beta, X, y: loss_compute(model(beta, X), y)
+
+
+def ridge_term(beta):
+    s = 0.0
+    for key in beta.keys():
+        s += jnp.sum(jnp.power(beta[key], 2))
+    return s
+    
+
+
+def log_loss_ridge(model, lam):
+    log_loss_func = logistic_loss_func(model=model)
+    return (lambda beta, X, y: jnp.add(log_loss_func(beta, X, y), lam*ridge_term(beta)))

@@ -32,10 +32,14 @@ def neural_network_model(beta, X, activation=sigmoid, output_activation = (lambd
     out = X.copy()
 
     # For each remaining layer we propagate forward
+    print(beta.keys())
+    print(len(beta.keys()) // 2)
     for i in range(1, len(beta.keys()) // 2):  # for each layer
-
+        print("Hidden")
+        print(out)
         # Dot with weights, add biases, apply activation function
         out = activation(jnp.add(jnp.dot(out, beta[f"W{i}"]), beta[f"b{i}"]))
+
 
     out_final = output_activation(jnp.add(
         jnp.dot(out, beta[f"W{len(beta.keys())//2}"]), beta[f"b{len(beta.keys())//2}"]
