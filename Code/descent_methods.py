@@ -390,7 +390,6 @@ def SGD_adam(
 ):
     init_func = init_adam(lr, beta0, beta1, beta2, delta)
 
-
     return _SGD_general(
         X_train,
         y_train,

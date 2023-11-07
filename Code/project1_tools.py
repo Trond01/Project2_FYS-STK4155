@@ -1,4 +1,6 @@
 import numpy as np
+from matplotlib import pyplot as plt
+import matplotlib.cm as cm
 
 
 def FrankeFunction(x, y):
@@ -39,6 +41,24 @@ def feature_matrix_2d(x, y, num_features):
         deg += 1
 
 
+def scale_feature_matrix(X):
+    """Scales feature matrix using mean/variance scaling.
+
+    Args:
+        X (Matrix): Feature Matrix
+
+    Returns:
+        Matrix: Scaled feature matrix
+    """
+    means = np.mean(X, axis=0).reshape((1, X.shape[1]))
+    means[0, 0] = 0
+    var = np.var(X, axis=0).reshape((1, X.shape[1]))
+    var[0, 0] = 1
+    X_copy = np.copy(X - means)
+    X_copy = X_copy / np.sqrt(var)
+    return X_copy, means, var
+
+
 def r2_sampling(num_points, sigma2=0):
     """
     To add noise, input sigma2 > 0.
@@ -52,3 +72,20 @@ def r2_sampling(num_points, sigma2=0):
     )
 
     return {"x": x, "y": y, "z": z}
+
+
+def plot_surface(x, y, z, filename=None):
+    # Init figure
+    fig = plt.figure()
+    ax = fig.add_subplot(projection="3d")
+
+    # Plot the surface.
+    surf = ax.plot_surface(x, y, z, cmap=cm.coolwarm, linewidth=0, antialiased=False)
+
+    # Add a color bar which maps values to colors.
+    fig.colorbar(surf, shrink=0.5, aspect=5)
+
+    if filename:
+        plt.savefig(filename)
+
+    plt.show()
