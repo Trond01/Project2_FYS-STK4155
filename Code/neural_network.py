@@ -6,7 +6,7 @@ import numpy as np
 import jax.numpy as jnp
 
 
-def _beta_init(layer_list):
+def beta_init(layer_list):
     """
     layer list, eg [2, 10, 1] for 2 input, 10 hidden neurons and 1 output
     """
@@ -24,7 +24,7 @@ def _beta_init(layer_list):
     return beta0
 
 
-def neural_network_model(beta, X, activation=sigmoid, output_activation = (lambda x: x)):
+def neural_network_model(beta, X, activation=sigmoid, output_activation=(lambda x: x)):
     """
     Function to evaluate the neural network prediction for feature matrix X
     """
@@ -33,13 +33,15 @@ def neural_network_model(beta, X, activation=sigmoid, output_activation = (lambd
 
     # For each remaining layer we propagate forward
     for i in range(1, len(beta.keys()) // 2):  # for each layer
-
         # Dot with weights, add biases, apply activation function
         out = activation(jnp.add(jnp.dot(out, beta[f"W{i}"]), beta[f"b{i}"]))
 
-    out_final = output_activation(jnp.add(
-        jnp.dot(out, beta[f"W{len(beta.keys())//2}"]), beta[f"b{len(beta.keys())//2}"]
-    ))
+    out_final = output_activation(
+        jnp.add(
+            jnp.dot(out, beta[f"W{len(beta.keys())//2}"]),
+            beta[f"b{len(beta.keys())//2}"],
+        )
+    )
 
     return out_final
 
@@ -58,13 +60,12 @@ def neural_network_train(
     output_activation=None,  ### TODO, actually implement this??
     descent_method=SGD_adam,
 ):
-    
     # Dictionary for storing result
-    result = {}  
+    result = {}
 
     # Find layer structure and initialise beta0
     layer_list = [X_train.shape[1]] + hidden_layer_list + [y_train.shape[1]]
-    beta0 = _beta_init(layer_list)
+    beta0 = beta_init(layer_list)
 
     # Construct the loss and gradient functions
     _neural_network_loss_func = MSELoss_method(
