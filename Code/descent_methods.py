@@ -54,6 +54,7 @@ def _SGD_general(
     n_batches=5,
     test_loss_func=None,
     gamma=0.0,
+    print_epoch_num=False,
 ):
     # Get parameter keys
     keys = beta0.keys()
@@ -78,7 +79,9 @@ def _SGD_general(
 
     # Perform training
     for epoch in range(n_epochs):
-        print(f"Epoch: {epoch}")
+        if print_epoch_num == True:
+            print(f"Epoch: {epoch}")
+
         # Accumulation variables
         tools = init_func(epoch, gamma, v)
 
