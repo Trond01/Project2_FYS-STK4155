@@ -161,7 +161,7 @@ def SGD(
         step_SGD,
         beta0,
         n_epochs=n_epochs,
-        n_batches=5,
+        n_batches=n_batches,
         test_loss_func=test_loss_func,
         gamma=gamma,
     )
@@ -264,7 +264,7 @@ def SGD_adagrad(
         step_adagrad,
         beta0,
         n_epochs=n_epochs,
-        n_batches=5,
+        n_batches=n_batches,
         test_loss_func=test_loss_func,
         gamma=gamma,
     )
@@ -320,7 +320,7 @@ def SGD_RMS_prop(
     grad_method,
     beta0: dict,
     n_epochs: int = 50,
-    n_batches: int = 10,
+    n_batches: int = 5,
     test_loss_func=None,
     lr: float = 0.01,  # learning rate
     gamma: float = 0.0,  # momentum
@@ -411,7 +411,7 @@ def SGD_adam(
     grad_method,
     beta0: dict,
     n_epochs: int = 50,
-    n_batches: int = 10,
+    n_batches: int = 5,
     test_loss_func=None,
     lr: float = 0.01,
     gamma: float = 0.0,
