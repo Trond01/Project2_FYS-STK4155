@@ -4,6 +4,7 @@ from Code.descent_methods import SGD_adam
 
 import numpy as np
 import jax.numpy as jnp
+import jax.lax as lax
 
 
 def _beta_init(layer_list):
@@ -24,28 +25,93 @@ def _beta_init(layer_list):
     return beta0
 
 
-def neural_network_model(beta, X, activation=sigmoid, output_activation = (lambda x: x)):
+def get_neural_network_model(num_hidden ,activation=sigmoid, output_activation = (lambda x : x)):
+
     """
-    Function to evaluate the neural network prediction for feature matrix X
-    """
-    # First layer = input
-    out = X.copy()
+        Due to issues with for loops and JAX, we have implemented functions for 0-6 layers
 
-    # For each remaining layer we propagate forward
-    print(beta.keys())
-    print(len(beta.keys()) // 2)
-    for i in range(1, len(beta.keys()) // 2):  # for each layer
-        print("Hidden")
-        print(out)
-        # Dot with weights, add biases, apply activation function
-        out = activation(jnp.add(jnp.dot(out, beta[f"W{i}"]), beta[f"b{i}"]))
+        input:
+            beta: 
+            X: 
+            activation: activation for the hidden layers
+            output_activation: function to shape output
+
+    """        
+    if num_hidden == 0:
+        return lambda beta, X: neural_0(beta, X, activation=activation, output_activation=output_activation)
+    elif num_hidden == 1:
+        return lambda beta, X: neural_1(beta, X, activation=activation, output_activation=output_activation)
+    elif num_hidden == 2:
+        return lambda beta, X: neural_2(beta, X, activation=activation, output_activation=output_activation)
+    elif num_hidden == 3:
+        return lambda beta, X: neural_3(beta, X, activation=activation, output_activation=output_activation)
+    elif num_hidden == 4:
+        return lambda beta, X: neural_4(beta, X, activation=activation, output_activation=output_activation)
+    elif num_hidden == 5:
+        return lambda beta, X: neural_5(beta, X, activation=activation, output_activation=output_activation)
+    elif num_hidden == 6:
+        return lambda beta, X: neural_6(beta, X, activation=activation, output_activation=output_activation)
+    else:
+        raise ValueError("num hidden must be 0, 1, ..., 6")
+        
 
 
-    out_final = output_activation(jnp.add(
-        jnp.dot(out, beta[f"W{len(beta.keys())//2}"]), beta[f"b{len(beta.keys())//2}"]
-    ))
+def neural_0(beta, X, activation=sigmoid, output_activation = (lambda x: x)):
+    
+    out = output_activation(jnp.dot(X.copy(), beta[f"W1"]) + beta[f"b1"])
+    return out
 
-    return out_final
+
+def neural_1(beta, X, activation=sigmoid, output_activation = (lambda x: x)):
+    
+    out = activation(jnp.dot(X.copy(), beta[f"W1"]) + beta[f"b1"])
+    out = output_activation(jnp.dot(out, beta[f"W2"]) + beta[f"b2"])
+    return out
+
+def neural_2(beta, X, activation=sigmoid, output_activation = (lambda x: x)):
+    
+    out = activation(jnp.dot(X.copy(), beta[f"W1"]) + beta[f"b1"])
+    out = activation(jnp.dot(out, beta[f"W2"]) + beta[f"b2"])
+    out = output_activation(jnp.dot(out, beta[f"W3"]) + beta[f"b3"])
+    return out
+
+def neural_3(beta, X, activation=sigmoid, output_activation = (lambda x: x)):
+    
+    out = activation(jnp.dot(X.copy(), beta[f"W1"]) + beta[f"b1"])
+    out = activation(jnp.dot(out, beta[f"W2"]) + beta[f"b2"])
+    out = activation(jnp.dot(out, beta[f"W3"]) + beta[f"b3"])
+    out = output_activation(jnp.dot(out, beta[f"W4"]) + beta[f"b4"])
+    return out
+
+def neural_4(beta, X, activation=sigmoid, output_activation = (lambda x: x)):
+    
+    out = activation(jnp.dot(X.copy(), beta[f"W1"]) + beta[f"b1"])
+    out = activation(jnp.dot(out, beta[f"W2"]) + beta[f"b2"])
+    out = activation(jnp.dot(out, beta[f"W3"]) + beta[f"b3"])
+    out = activation(jnp.dot(out, beta[f"W4"]) + beta[f"b4"])
+    out = output_activation(jnp.dot(out, beta[f"W5"]) + beta[f"b5"])
+    return out
+
+def neural_5(beta, X, activation=sigmoid, output_activation = (lambda x: x)):
+    
+    out = activation(jnp.dot(X.copy(), beta[f"W1"]) + beta[f"b1"])
+    out = activation(jnp.dot(out, beta[f"W2"]) + beta[f"b2"])
+    out = activation(jnp.dot(out, beta[f"W3"]) + beta[f"b3"])
+    out = activation(jnp.dot(out, beta[f"W4"]) + beta[f"b4"])
+    out = activation(jnp.dot(out, beta[f"W5"]) + beta[f"b5"])
+    out = output_activation(jnp.dot(out, beta[f"W6"]) + beta[f"b6"])
+    return out
+
+def neural_6(beta, X, activation=sigmoid, output_activation = (lambda x: x)):
+    
+    out = activation(jnp.dot(X.copy(), beta[f"W1"]) + beta[f"b1"])
+    out = activation(jnp.dot(out, beta[f"W2"]) + beta[f"b2"])
+    out = activation(jnp.dot(out, beta[f"W3"]) + beta[f"b3"])
+    out = activation(jnp.dot(out, beta[f"W4"]) + beta[f"b4"])
+    out = activation(jnp.dot(out, beta[f"W5"]) + beta[f"b5"])
+    out = activation(jnp.dot(out, beta[f"W6"]) + beta[f"b6"])
+    out = output_activation(jnp.dot(out, beta[f"W7"]) + beta[f"b7"])
+    return out
 
 
 def neural_network_train(
