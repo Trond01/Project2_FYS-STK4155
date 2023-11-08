@@ -14,7 +14,9 @@ def feature_matrix(x, num_features):
     X: The feature matrix,a 2D numpy array with a column for each feature
     """
 
-    return jnp.array([x**i for i in range(num_features)]).T[0]
+    x = x.squeeze()
+
+    return jnp.array([x**i for i in range(num_features)]).T
 
 
 def random_partition(X, y, batch_size):
