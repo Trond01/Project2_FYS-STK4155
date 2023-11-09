@@ -70,9 +70,8 @@ def _SGD_general(
     for key in keys:
         v[key] = jnp.zeros_like(beta0[key])
 
-    # Get batch size
-    batch_size = int(y_train.shape[0] / n_batches)
-    batches = random_partition(X_train, y_train, batch_size)
+    # Partition in batches
+    batches, batch_size = random_partition(X_train, y_train, n_batches)
 
     # Store current beta
     beta_current = beta0.copy()
@@ -185,6 +184,7 @@ def GD(
     test_loss_func=None,
     lr: float = 0.01,  # learning rate
     gamma: float = 0.0,  # momentum
+    **kwargs,  # Want to call the method with same signature as the others...
 ):
     # USE SGD with full batch
     batch_size = y_train.shape[0]
