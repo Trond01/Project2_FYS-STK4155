@@ -1,5 +1,5 @@
-from Code.utilities import jax_loss_grad
 import jax.numpy as jnp
+from jax import grad, jit
 import pandas as pd
 
 
@@ -16,7 +16,7 @@ def logistic_loss_func(model):
 
 
 def logistic_grad(model):
-    return jax_loss_grad(logistic_loss_func(model))
+    return grad(logistic_loss_func(model))
 
 
 def import_breast_cancer(filename="../Code/Data/breast-cancer-wisconsin.data"):
