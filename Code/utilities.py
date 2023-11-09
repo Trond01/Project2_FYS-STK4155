@@ -19,15 +19,15 @@ def feature_matrix(x, num_features):
     return jnp.array([x**i for i in range(num_features)]).T
 
 
-def random_partition(X, y, batch_size):
+def random_partition(X, y, n_batches):
+    batch_size = int(y.shape[0] / n_batches)
     batches = []
-    n = y.shape[0]
-    m = int(n / batch_size)
-    for i in range(m):
+
+    for i in range(n_batches):
         index = list(range(i * batch_size, (i + 1) * batch_size))
         batches.append((X[index, :], y[index]))
 
-    return batches
+    return batches, batch_size
 
 
 def train_test_split(X, Y, percentage, test_index=None):
@@ -50,6 +50,8 @@ def train_test_split(X, Y, percentage, test_index=None):
 
 
 ##################################################
+##################### Loss functions
+##################################################
 
 
 def MSELoss(y, y_pred):
@@ -65,13 +67,24 @@ def MSELoss(y, y_pred):
     return jnp.sum(jnp.power(y - y_pred, 2)) / y.shape[0]
 
 
-# Defines loss function for JAX grad
+# Defines loss function. Can use these with JAX grad
 def MSELoss_method(model):
     return lambda beta, X, y: MSELoss(model(beta, X), y)
 
 
+def _ridge_term(beta):
+    s = 0.0
+    for key in beta.keys():
+        s += jnp.sum(jnp.power(beta[key], 2))
+    return s
+
+
+def ridge_loss_method(model, lam):
+    return lambda beta, X, y: MSELoss(model(beta, X), y) + _ridge_term(beta) * lam
+
+
 ##########################################################
-##################### OLS and RIDGE
+##################### Gradients for OLS and RIDGE
 ##########################################################
 
 
@@ -102,17 +115,6 @@ def ridge_train_analgrad(model, lam):
 
 
 #### Ridge automatic
-def _ridge_term(beta):
-    s = 0.0
-    for key in beta.keys():
-        s += jnp.sum(jnp.power(beta[key], 2))
-    return s
-
-
-def ridge_loss_method(model, lam):
-    return lambda beta, X, y: MSELoss(model(beta, X), y) + _ridge_term(beta) * lam
-
-
 def ridge_train_autograd(model, lam):
     return grad(ridge_loss_method(model, lam))
 
