@@ -35,7 +35,6 @@ def get_neural_network_model(num_hidden ,activation=sigmoid, output_activation =
             X: 
             activation: activation for the hidden layers
             output_activation: function to shape output
-
     """        
     if num_hidden == 0:
         return lambda beta, X: neural_0(beta, X, activation=activation, output_activation=output_activation)
