@@ -20,6 +20,7 @@ def feature_matrix(x, num_features):
 
 
 def random_partition(X, y, n_batches):
+    
     batch_size = int(y.shape[0] / n_batches)
     batches = []
 
