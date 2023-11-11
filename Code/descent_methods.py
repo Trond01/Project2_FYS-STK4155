@@ -62,8 +62,12 @@ def _SGD_general(
     # Initialise result storage
     result = {}
     if test_loss_func is not None:
-        result["train_loss_list"] = [test_loss_func(beta0, X_train, y_train)]
-        result["test_loss_list"] = [test_loss_func(beta0, X_test, y_test)]
+        if type(test_loss_func) is list:
+            result["train_loss_list"] = [[test_func(beta0, X_train, y_train)] for test_func in test_loss_func]
+            result["test_loss_list"] = [[test_func(beta0, X_test, y_test)] for test_func in test_loss_func]
+        else:
+            result["train_loss_list"] = [test_loss_func(beta0, X_train, y_train)]
+            result["test_loss_list"] = [test_loss_func(beta0, X_test, y_test)]
 
     # Initialise step
     v = {}
@@ -87,7 +91,6 @@ def _SGD_general(
         for i in range(n_batches):
             # Draw a batch and compute gradients for this sub-epoch
             X_b, y_b = batches[np.random.randint(n_batches)]
-
             # Divide by batch_size to get avg contribution from training samples
             gradients = grad_method(beta_current, X_b, y_b)
             for key in gradients.keys():
@@ -96,14 +99,18 @@ def _SGD_general(
             # Perform a step with desired method
             beta_current, tools = step_func(beta_current, tools, gradients)
 
-            # Store sub epoch errors
             if test_loss_func is not None:
-                result["train_loss_list"].append(
-                    test_loss_func(beta_current, X_train, y_train)
-                )
-                result["test_loss_list"].append(
-                    test_loss_func(beta_current, X_test, y_test)
-                )
+                if type(test_loss_func) is list:
+                    for i, test_func in enumerate(test_loss_func):
+                        result["train_loss_list"][i].append(test_func(beta_current, X_train, y_train))
+                        result["test_loss_list"][i].append(test_func(beta_current, X_test, y_test))
+                else:
+                    result["train_loss_list"].append(
+                        test_loss_func(beta_current, X_train, y_train)
+                    )
+                    result["test_loss_list"].append(
+                        test_loss_func(beta_current, X_test, y_test)
+                    )
 
         gamma = tools["gamma"]
         v = tools["v"]

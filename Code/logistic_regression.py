@@ -1,14 +1,17 @@
 import jax.numpy as jnp
 from jax import grad, jit
 import pandas as pd
+import numpy as np
 
 
 def log_loss(y_pred, y_i):
-    y_pred = jnp.clip(jnp.reshape(y_pred, (-1, 1)), 1e-15, 1 - 1e-15)
+
+    # Clip for save logarithm and reshape
+    y_new_pred = jnp.clip(jnp.reshape(y_pred, (-1, 1)), 0.0000001, 0.9999999)
     y_i = jnp.reshape(y_i, (-1, 1))
-    
+
     return (
-        jnp.mean(-y_i * jnp.log(y_pred) - (1 - y_i) * jnp.log(1 - y_pred))
+        jnp.sum(-y_i * jnp.log(y_new_pred) - (1 - y_i) * jnp.log(1 - y_new_pred))/ y_i.shape[0]
     )
 
 
@@ -44,8 +47,8 @@ def import_breast_cancer(filename="../Code/Data/breast-cancer-wisconsin.data"):
         data[col] = pd.to_numeric(data[col], errors="coerce")
     data = data.dropna()
     data["target"] = data["target"] == 4
-    y = jnp.array(data["target"], dtype=int)
-    X = jnp.array(data.to_numpy()[:, 1:-1], dtype=jnp.float64)
+    y = np.array(data["target"], dtype=int)
+    X = np.array(data.to_numpy()[:, 1:-1], dtype=jnp.float64)
     return X, y
 
 
