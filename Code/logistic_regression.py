@@ -5,8 +5,11 @@ import numpy as np
 
 
 def log_loss(y_pred, y_i):
+
+    # Clip for save logarithm and reshape
     y_new_pred = jnp.clip(jnp.reshape(y_pred, (-1, 1)), 0.0000001, 0.9999999)
     y_i = jnp.reshape(y_i, (-1, 1))
+
     return (
         jnp.sum(-y_i * jnp.log(y_new_pred) - (1 - y_i) * jnp.log(1 - y_new_pred))/ y_i.shape[0]
     )
