@@ -125,7 +125,7 @@ def ridge_train_autograd(model, lam):
 ##########################################################
 
 
-def plot_test_results(test_loss_list, train_loss_list, num_batches):
+def plot_test_results(test_loss_list, train_loss_list, num_batches, ylabel="MSE"):
     # Create a figure with two subplots
     fig, axs = plt.subplots(1, 2, figsize=(9, 3))  # 1 row, 2 columns
 
@@ -133,7 +133,7 @@ def plot_test_results(test_loss_list, train_loss_list, num_batches):
     axs[0].plot(test_loss_list, label="test")
     axs[0].plot(train_loss_list, label="train")
     axs[0].set_xlabel("Training step")
-    axs[0].set_ylabel("MSE")
+    axs[0].set_ylabel(ylabel)
     axs[0].set_title("Over all sub-epochs")
     axs[0].legend()
 
