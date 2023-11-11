@@ -16,11 +16,13 @@ def _beta_init(layer_list):
 
     # Add random initialisation
     for i in range(1, len(layer_list)):
+        #Xavier Initialization #TODO Reference
+
         # Weight matrix
         beta0[f"W{i}"] = np.random.normal(loc=0, scale=np.sqrt(2/(layer_list[i-1] + layer_list[i])), size=(layer_list[i - 1], layer_list[i]))
-
+        
         # Bias vector
-        beta0[f"b{i}"] = np.random.normal(loc=0, scale=np.sqrt(2/(layer_list[i-1] + layer_list[i])), size=(layer_list[i]))
+        beta0[f"b{i}"] = 0*np.random.normal(loc=0, scale=np.sqrt(2/(layer_list[i-1] + layer_list[i])), size=(layer_list[i]))
 
     return beta0
 
