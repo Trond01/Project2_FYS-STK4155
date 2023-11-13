@@ -63,8 +63,12 @@ def _SGD_general(
     result = {}
     if test_loss_func is not None:
         if type(test_loss_func) is list:
-            result["train_loss_list"] = [[test_func(beta0, X_train, y_train)] for test_func in test_loss_func]
-            result["test_loss_list"] = [[test_func(beta0, X_test, y_test)] for test_func in test_loss_func]
+            result["train_loss_list"] = [
+                [test_func(beta0, X_train, y_train)] for test_func in test_loss_func
+            ]
+            result["test_loss_list"] = [
+                [test_func(beta0, X_test, y_test)] for test_func in test_loss_func
+            ]
         else:
             result["train_loss_list"] = [test_loss_func(beta0, X_train, y_train)]
             result["test_loss_list"] = [test_loss_func(beta0, X_test, y_test)]
@@ -102,8 +106,12 @@ def _SGD_general(
             if test_loss_func is not None:
                 if type(test_loss_func) is list:
                     for i, test_func in enumerate(test_loss_func):
-                        result["train_loss_list"][i].append(test_func(beta_current, X_train, y_train))
-                        result["test_loss_list"][i].append(test_func(beta_current, X_test, y_test))
+                        result["train_loss_list"][i].append(
+                            test_func(beta_current, X_train, y_train)
+                        )
+                        result["test_loss_list"][i].append(
+                            test_func(beta_current, X_test, y_test)
+                        )
                 else:
                     result["train_loss_list"].append(
                         test_loss_func(beta_current, X_train, y_train)
