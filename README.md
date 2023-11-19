@@ -12,7 +12,7 @@ This is a repository for the second project in the course FYS-STK4155 - Applied 
 ├── README.md \
 └── .gitignore
 
-The code is demonstrated in jupyter notebooks found in the folder Code. 
+The code is demonstrated in jupyter notebooks found in the folder Runs. 
 
 ## Some notes on the code
 
