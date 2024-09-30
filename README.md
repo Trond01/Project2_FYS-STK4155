@@ -9,7 +9,7 @@ This is a repository for the second project in the course FYS-STK4155 - Applied 
 ├── Report        # Report detailing results, methods, and analysis
 ├── Runs          # Code used to perform experiments and generate report figures
 │   ├── Figures   # Generated figures for the report
-│   ├── Testing   # Additional notebooks for code verification and benchmarking
+│   └── Testing   # Additional notebooks for code verification and benchmarking
 ├── README.md
 └── .gitignore    
 ```
